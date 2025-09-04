@@ -1,0 +1,20 @@
+version: "3.8"
+
+services:
+  db2ssh:
+    image: ibmcom/db2
+    container_name: db2ssh
+    privileged: true
+    ports:
+      - "50000:50000"  # Puerto DB2
+      - "2224:22"      # Puerto SSH (si lo habilitaste en Dockerfile)
+    environment:
+      LICENSE: accept
+      DB2INST1_PASSWORD: password
+      DBNAME: testdb
+    volumes:
+      - db2:/database
+    command: bash -c "/usr/sbin/sshd -D & su - db2inst1 -c 'db2start' && tail -f /dev/null"
+
+volumes:
+  db2:

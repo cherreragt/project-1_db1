@@ -1,0 +1,29 @@
+#**********************************************************************
+# Response File for DB2 Server Installation - Silent Mode
+#**********************************************************************
+
+# Product Edition
+INSTALL_TYPE=DB2_SERVER_EDITION
+
+# Accept License
+LICENSE_ACCEPTED=YES
+
+# Install Path
+INSTALL_PATH=/opt/ibm/db2/V12.1
+
+# Instance
+CREATE_DB2INSTANCE=YES
+DB2INSTANCE=db2inst1
+INSTGROUP=db2iadm1
+FENCEDUSER=db2fenc1
+FENCEDGROUP=db2fadm1
+DB2INST1_PASSWORD=Password123
+
+# Features to install
+FEATURES=DB2_SERVER, DB2_CMD_LINE_UTILITIES
+
+# Enable Autostart
+AUTOSTART=YES
+
+# Silent Mode
+SILENT_INSTALL=YES

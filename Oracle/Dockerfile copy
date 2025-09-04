@@ -1,0 +1,52 @@
+FROM oraclelinux:8-slim
+
+RUN microdnf update -y && \
+    microdnf install -y openssh-server sudo glibc libaio libnsl gcc make binutils && \
+    microdnf clean all && \
+    microdnf install dnf && \
+    dnf install -y oracle-database-preinstall-21c-1.0-1.el8.x86_64 && \
+    dnf install -y passwd && \
+    dnf install -y ncurses && \
+    dnf install -y unixODBC unixODBC-devel curl gnupg2 libaio-devel glibc-devel libgcc
+
+
+## new
+COPY oracle-database-xe-21c-1.0-1.ol8.x86_64.rpm /tmp/
+COPY mysql-connector-odbc-9.0.0-1.el8.x86_64.rpm /tmp/
+#COPY msodbcsql18-18.3.2.1-1.x86_64.rpm /tmp/
+COPY odbc.ini /etc/
+COPY gateways_21c /tmp/gateways_21c/
+
+
+RUN dnf install -y /tmp/oracle-database-xe-21c-1.0-1.ol8.x86_64.rpm && \
+    rm -f /tmp/oracle-database-xe-21c-1.0-1.ol8.x86_64.rpm && \
+    dnf localinstall -y /tmp/mysql-connector-odbc-9.0.0-1.el8.x86_64.rpm && \
+    rm -f /tmp/mysql-connector-odbc-9.0.0-1.el8.x86_64.rpm && \
+    dnf clean all
+
+# Microsoft repo setup for RHEL 8
+RUN curl https://packages.microsoft.com/config/rhel/8/prod.repo -o /etc/yum.repos.d/mssql-release.repo && \
+    ACCEPT_EULA=Y dnf install -y msodbcsql18 && \
+    dnf clean all
+
+COPY initdg4odbc.ora /opt/oracle/product/21c/dbhomeXE/hs/admin/
+COPY initMYSQL_DSN.ora /opt/oracle/product/21c/dbhomeXE/hs/admin/
+
+ENV ORACLE_HOME=/opt/oracle/product/21c/dbhomeXE
+ENV PATH=${ORACLE_HOME}/bin:$PATH
+ENV ORACLE_SID=XE
+
+RUN mkdir /var/run/sshd
+
+# Generar claves host para sshd
+RUN ssh-keygen -A
+
+# Configurar contraseña root
+RUN echo 'root:rootpassword' | chpasswd
+
+# Permitir login root
+RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+
+EXPOSE 22
+
+CMD ["/usr/sbin/sshd", "-D"]

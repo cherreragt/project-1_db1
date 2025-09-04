@@ -1,0 +1,22 @@
+# This is a sample agent init file that contains the HS parameters that are
+# needed for the Database Gateway for ODBC
+
+#
+# HS init parameters
+#
+HS_FDS_CONNECT_INFO = dg4odbc
+HS_FDS_TRACE_LEVEL = DEBUG
+HS_FDS_SHAREABLE_NAME = /usr/lib64/libodbc.so
+HS_FDS_TRACE_FILE = /tmp/dg4odbc.trc
+
+#
+# ODBC specific environment variables
+#
+set ODBCINI=/etc/odbc.ini
+set LD_LIBRARY_PATH=/usr/lib64
+set NLS_LANG=AMERICAN_AMERICA.AL32UTF8
+
+#
+# Environment variables required for the non-Oracle system
+#
+#set <envvar>=<value>

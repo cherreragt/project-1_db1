@@ -1,0 +1,11 @@
+prd =
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = localnode)(PORT = 1521))
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SERVICE_NAME = pdb1.example.com)
+    )
+  )
+
+LISTENER_prd =
+  (ADDRESS = (PROTOCOL = TCP)(HOST = localnode)(PORT = 1521))

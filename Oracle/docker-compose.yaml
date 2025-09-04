@@ -1,0 +1,22 @@
+
+services:
+  oraclelinux-ssh:
+    build: .
+    container_name: oraclelinux_ssh
+    ports:
+      - "2222:22"     # mapear puerto 22 del contenedor a 2222 en host
+      - "1521:1521"   # <- Esto expone Oracle al host
+    restart: unless-stopped
+    hostname: localnode
+    tty: true
+    stdin_open: true
+    environment:
+      - ORACLE_HOME=/opt/oracle/product/21c/dbhomeXE
+      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/oracle/product/21c/dbhomeXE/bin
+      - ORACLE_SID=XE
+      - HOSTNAME=localnode
+      - LOCAL_HOSTNAME=localnode
+    volumes:
+      - oracle_data:/u01/app/oracle/oradata
+volumes:
+  oracle_data:

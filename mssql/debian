@@ -1,0 +1,15 @@
+FROM debian:bullseye-slim
+
+RUN apt-get update && apt-get install -y openssh-server && \
+    mkdir /var/run/sshd
+
+# Generar claves host para sshd
+RUN ssh-keygen -A
+
+# Configuración opcional, por ejemplo permitir root login (no recomendado en producción)
+RUN echo 'root:rootpassword' | chpasswd
+RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+
+EXPOSE 22
+
+CMD ["/usr/sbin/sshd", "-D"]

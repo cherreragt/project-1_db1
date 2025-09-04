@@ -1,0 +1,53 @@
+FROM ubuntu:22.04
+
+# Evitar prompts interactivos
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Configurar locales
+RUN apt-get update && apt-get install -y locales && locale-gen en_US.UTF-8
+ENV LANG en_US.UTF-8
+
+# Instalar dependencias completas para Db2
+RUN dpkg --add-architecture i386 && \
+    apt-get update && apt-get install -y \
+    sudo \
+    curl \
+    libpam0g \
+    libpam0g:i386 \
+    libaio1 \
+    libaio1:i386 \
+    libnuma1 \
+    libnuma1:i386 \
+    libc6:i386 \
+    libstdc++6:i386 \
+    lib32z1 \
+    net-tools \
+    ksh \
+    binutils \
+    file \
+    bzip2 \
+    xz-utils \
+    tar \
+    gzip \
+    make \
+    && rm -rf /var/lib/apt/lists/*
+
+# Crear usuario para Db2
+RUN useradd -m -d /home/db2inst1 -s /bin/bash db2inst1 && \
+    echo "db2inst1:Password123" | chpasswd && \
+    adduser db2inst1 sudo
+
+# Asegurar que /etc/services exista (Db2 lo requiere)
+RUN touch /etc/services && chown root:root /etc/services
+
+# Copiar instalador de Db2 (debes tener el archivo .tar.gz)
+COPY v12.1.2_linuxx64_server_dec.tar.gz /tmp/
+COPY db2response.rsp /tmp/
+
+# Descomprimir e instalar
+RUN cd /tmp && tar -xvzf v12.1.2_linuxx64_server_dec.tar.gz && \
+    cd server_dec && ./db2setup -r /tmp/db2response.rsp
+
+# Cambiar a usuario no-root
+USER db2inst1
+WORKDIR /home/db2inst1

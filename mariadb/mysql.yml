@@ -1,0 +1,19 @@
+version: '3.3'
+services:
+  mysql:
+    container_name: mysql
+    image: mysql:8.0.37-debian
+    command: --local-infile=1
+    ports:
+      - "3306:3306" 
+    expose:
+      - '3306'
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'casa'
+      MYSQL_ROOT_PASSWORD: "casa"
+      MYSQL_USER: "casa"
+      MYSQL_PASSWORD: "casa"
+#docker exec -it mysql mysql -uroot -p
+#cambiar pw
+#pw test o dddd
