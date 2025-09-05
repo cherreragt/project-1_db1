@@ -1,5 +1,4 @@
-# Next files were ignored 'cause 
-the weight of the files exceeds the allowed limit, if you wanna run the project please download that files.
+# Next files were ignored 'cause the weight of the files exceeds the allowed limit, if you wanna run the project please download that files.
 
 
 # Ignorar archivo específico de DB2
