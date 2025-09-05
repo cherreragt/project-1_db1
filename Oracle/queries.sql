@@ -376,6 +376,85 @@ INSERT INTO salary_history (employee_id, old_salary, new_salary) VALUES
 
 -- #########################################
 -- SQL
+-- ===============================
+-- 1. Tabla de médicos
+-- ===============================
+CREATE TABLE Medicos (
+                         MedicoID INT IDENTITY(1,1) PRIMARY KEY,
+                         Nombre NVARCHAR(100) NOT NULL,
+                         Especialidad NVARCHAR(50),
+                         Telefono NVARCHAR(20)
+);
+
+-- Inserts de ejemplo
+INSERT INTO Medicos (Nombre, Especialidad, Telefono)
+VALUES
+    ('Dr. Juan Pérez', 'Cardiología', '555-1234'),
+    ('Dra. Ana Gómez', 'Pediatría', '555-5678'),
+    ('Dr. Carlos Ruiz', 'Dermatología', '555-9012');
+
+-- Select básico
+SELECT * FROM Medicos;
+
+
+-- ===============================
+-- 2. Tabla de pacientes
+-- ===============================
+CREATE TABLE Pacientes (
+                           PacienteID INT IDENTITY(1,1) PRIMARY KEY,
+                           Nombre NVARCHAR(100) NOT NULL,
+                           FechaNacimiento DATE,
+                           Telefono NVARCHAR(20),
+                           Direccion NVARCHAR(150)
+);
+
+-- Inserts de ejemplo
+INSERT INTO Pacientes (Nombre, FechaNacimiento, Telefono, Direccion)
+VALUES
+    ('Luis Fernández', '1980-05-12', '555-1111', 'Av. Central 123'),
+    ('María López', '1995-08-22', '555-2222', 'Calle 5 #45'),
+    ('José Martínez', '2000-12-01', '555-3333', 'Zona 10');
+
+-- Select básico
+SELECT * FROM Pacientes;
+
+
+-- ===============================
+-- 3. Tabla de consultas médicas
+-- ===============================
+CREATE TABLE Consultas (
+                           ConsultaID INT IDENTITY(1,1) PRIMARY KEY,
+                           MedicoID INT NOT NULL,
+                           PacienteID INT NOT NULL,
+                           FechaHora DATETIME NOT NULL,
+                           Motivo NVARCHAR(200),
+                           Diagnostico NVARCHAR(200),
+                           FOREIGN KEY (MedicoID) REFERENCES Medicos(MedicoID),
+                           FOREIGN KEY (PacienteID) REFERENCES Pacientes(PacienteID)
+);
+
+-- Inserts de ejemplo
+INSERT INTO Consultas (MedicoID, PacienteID, FechaHora, Motivo, Diagnostico)
+VALUES
+    (1, 1, '2025-09-05 09:00', 'Chequeo de corazón', 'Saludable'),
+    (2, 2, '2025-09-05 10:30', 'Fiebre y tos', 'Resfriado común'),
+    (3, 3, '2025-09-05 11:00', 'Revisión piel', 'Acné leve');
+
+-- Select básico
+SELECT * FROM Consultas;
+
+-- Consultas combinadas
+-- Obtener las consultas con nombres de médico y paciente
+SELECT
+    c.ConsultaID,
+    m.Nombre AS Medico,
+    p.Nombre AS Paciente,
+    c.FechaHora,
+    c.Motivo,
+    c.Diagnostico
+FROM Consultas c
+         JOIN Medicos m ON c.MedicoID = m.MedicoID
+         JOIN Pacientes p ON c.PacienteID = p.PacienteID;
 
 
 
